@@ -1,6 +1,6 @@
 # masterkube1
 
-## knockd setup
+## Setup firewall + knockd
 
 https://www.howtogeek.com/442733/how-to-use-port-knocking-on-linux-and-why-you-shouldnt/
 
@@ -11,6 +11,7 @@ apt-get update
 apt-get install -y knockd
 knock 192.168.1.145 4431 5119 6542
 ```
+
 ## Bash history logging
 ```sh
 cat /etc/profile.d/command.sh
@@ -24,11 +25,34 @@ sudo systemctl enable libvirtd
 sudo systemctl start libvirtd
 ```
 
-# Setup bridge interface
+# Networking for the VMs
+
+Removed libvirt's default bridge and setup a real bridge (br0) with the ethernet interface:
 https://ostechnix.com/install-and-configure-kvm-in-ubuntu-20-04-headless-server/
 
+Create libvirt network for the host bridge:
+```sh
+cat > host-bridge.xml << _EOF_
+<network>
+  <name>host-bridge</name>
+  <forward mode="bridge"/>
+  <bridge name="br0"/>
+</network>
+_EOF_
 
-# Get the base image
+
+virsh net-define host-bridge.xml
+virsh net-start host-bridge
+```
+
+# Create cluster infra adm user
+
+```sh
+user adduser mckadm
+sudo usermod -aG kvm mckadm
+```
+
+# Get the Ubuntu image for the nodes
 mkdir -p ~/base
 BASE_IMAGE="focal-server-cloudimg-amd64-disk-kvm.img"
 DOWNLOAD_LINK=https://cloud-images.ubuntu.com/focal/current/$BASE_IMAGE
@@ -37,7 +61,6 @@ wget -c ${DOWNLOAD_LINK} -P ~/base
 # Create the master node
 ```sh
 qemu-img create -b ~/base/$BASE_IMAGE -f qcow2 -F qcow2 ~/disks/master1.img 10G
-
 
 cloud-localds -v --network-config=network_config_static.cfg test1-seed.img cloud_init.cfg
 
@@ -50,15 +73,3 @@ virt-install \
     --os-type Linux --os-variant ubuntu20.04 \
     --network bridge=br0,model=virtio \
     --noautoconsole
-
-cat > host-bridge.xml << _EOF_
-<network>
-  <name>host-bridge</name>
-  <forward mode="bridge"/>
-  <bridge name="br0"/>
-</network>
-_EOF_
-
-virsh net-define host-bridge.xml
-virsh net-start host-bridge
-sudo usermod -aG kvm mckadm

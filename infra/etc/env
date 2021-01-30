@@ -1,0 +1,4 @@
+export URL="http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04/release/"
+export IMAGE="ubuntu-20.04.1-legacy-server-amd64.iso"
+export IMAGE_DIR=$HOME/base
+export INSTALL_IMAGE=${IMAGE_DIR}/${IMAGE}

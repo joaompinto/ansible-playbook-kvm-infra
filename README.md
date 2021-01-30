@@ -50,26 +50,20 @@ virsh net-start host-bridge
 ```sh
 user adduser mckadm
 sudo usermod -aG kvm mckadm
+sudo su - mckadm
+ssh-keygen -t ed25519
+
 ```
 
 # Get the Ubuntu image for the nodes
-mkdir -p ~/base
-BASE_IMAGE="focal-server-cloudimg-amd64-disk-kvm.img"
-DOWNLOAD_LINK=https://cloud-images.ubuntu.com/focal/current/$BASE_IMAGE
-wget -c ${DOWNLOAD_LINK} -P ~/base
+
 
 # Create the master node
-```sh
-qemu-img create -b ~/base/$BASE_IMAGE -f qcow2 -F qcow2 ~/disks/master1.img 10G
 
-cloud-localds -v --network-config=network_config_static.cfg test1-seed.img cloud_init.cfg
+utils/download-image.sh
 
-virt-install \
-    --name=master1 \
-    --ram=2048 --vcpus=1 \
-    --boot hd,menu=on \
-    --disk path=test1-seed.img,device=cdrom \
-    --disk path=~/disks/master1.img,device=disk \
-    --os-type Linux --os-variant ubuntu20.04 \
-    --network bridge=br0,model=virtio \
-    --noautoconsole
+sudo apt install libnss-libvirt
+sed -i s'/\(hosts:\W.*\)/\1 files libvirt libvirt_guest dns mymachines/' /etc/nsswitch.conf
+
+# hostname, ram, cpus, disk_size
+infra/create-vm.sh master1 2048 1 10

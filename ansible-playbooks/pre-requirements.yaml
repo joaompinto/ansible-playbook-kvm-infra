@@ -1,0 +1,42 @@
+---
+- name: manage libvirt guests
+  hosts: localhost
+  connection: local 
+  become: yes
+
+  tasks:
+
+    - name: Install all the required packages
+      package:
+        name: 
+          - qemu 
+          - qemu-kvm
+          - libvirt-clients 
+          - libvirt-daemon-system 
+          - virtinst 
+          - bridge-utils
+          - python3-pip
+          - python3-lxml
+        state: latest
+
+    - name: start libvirtd
+      service: name=libvirtd state=started enabled=yes
+      register: libvirtd
+
+    - name: wait for libvirtd to get up
+      pause: seconds=10
+      when: libvirtd.changed      
+
+    - name: Add the mckadm
+      user:
+        name: mckadm
+        comment: John Doe
+        group: mckadm
+        groups: kvm, libvirt
+
+    - name: Download foo.conf
+      get_url:
+        url: http://example.com/path/file.conf
+        dest: /home/mckadm/disks
+        mode: '0440'        
+        owner: mckadm

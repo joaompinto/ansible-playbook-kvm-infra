@@ -1,0 +1,37 @@
+---
+- name: manage libvirt guests
+  user: mckadm
+  hosts: localhost
+  connection: local 
+
+  tasks:
+
+      - community.libvirt.virt_net:
+          command: define
+          name: br_nat
+          xml: '{{ lookup("template", "etc/nodes.yaml") }}'
+
+      - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+        include_vars: etc/nodes.yaml
+    
+      - name: get list of vms
+        virt: command=list_vms
+        register: virt_vms
+ 
+      - name: create vm
+        command: echo virt-install -n {{item.name}}
+        when: '"mck-"+item.name not in virt_vms.list_vms'
+        loop: "{{ nodes }}"
+
+      - name: get guest info
+        virt: command=info
+        register: virt_info
+
+      - name: virt_info
+        ansible.builtin.debug:
+          msg: "{{ virt_info }}"
+        
+      - name: make sure all vms are running
+        virt: name={{"mck-" + item.name}} command=start
+        when: virt_info["mck-" + item.name]['state'] != 'running'
+        loop: "{{ nodes }}"

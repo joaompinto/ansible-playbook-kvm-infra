@@ -1,0 +1,7 @@
+<network>
+    <name>mck</name>
+    <bridge name="mck-br"/>
+    <forward/>
+    <ip address="%NETWORK%" netmask="%NETMASK%">
+    </ip>
+</network>

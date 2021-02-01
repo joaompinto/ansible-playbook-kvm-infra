@@ -1,7 +1,0 @@
----
-nodes:
-    - name: master1    
-      cpu: 1
-      mem: 768
-      disk:
-          size: 10

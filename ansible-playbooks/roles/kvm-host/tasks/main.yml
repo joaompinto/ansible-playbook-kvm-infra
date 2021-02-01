@@ -1,0 +1,20 @@
+---
+- name: Install all the required packages
+  package:
+    name: 
+      - qemu 
+      - qemu-kvm
+      - libvirt-clients 
+      - libvirt-daemon-system 
+      - virtinst 
+      - bridge-utils
+      - python3-lxml 
+    state: latest
+
+- name: start libvirtd
+  service: name=libvirtd state=started enabled=yes
+  register: libvirtd
+
+- name: wait for libvirtd to get up
+  pause: seconds=10
+  when: libvirtd.changed      

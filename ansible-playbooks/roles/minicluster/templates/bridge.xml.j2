@@ -1,0 +1,21 @@
+<network>
+  <name>{{ item.netname }}</name>
+  <forward mode='route'/>
+{% if item.bridge_name is defined %}
+  <bridge name='{{ item.bridge_name }}' />
+{% endif %}
+
+{% if item.net4_address is defined %}
+  <ip family="ipv4" address='{{ item.net4_address | ipaddr('1') | ipaddr('address') }}' netmask='{{ item.net4_address | ipaddr('netmask') }}'>
+{% if item.net4_dhcp | default(False) == True %}
+  <dhcp>
+      <range start='{{ item.net4_address | ipaddr('200') | ipaddr('address') }}' end='{{ item.net4_address | ipaddr('-2') | ipaddr('address') }}'/>
+  </dhcp>
+{% endif %}
+  </ip>
+{% endif %}
+
+{% if item.net6_address is defined %}
+  <ip family="ipv6" address="{{ item.net6_address | ipaddr('address') }}" prefix="{{ item.net6_address | ipaddr('prefix') }}" />
+{% endif %}
+</network>

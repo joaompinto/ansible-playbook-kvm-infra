@@ -7,7 +7,6 @@ vmhost_network:
     - netname: mck
       bridge_name: br-mck
       net4_address: '192.168.8.0/24'
-      net4_dhcp: True
 
 nodes:
     - name: mck-master1    

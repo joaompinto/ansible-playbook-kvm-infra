@@ -8,9 +8,17 @@
   environment: 
     LIBVIRT_DEFAULT_URI: "qemu:///system"
   block:
-    - include_tasks: set-vars.yml
+    - include_tasks: 
+        file: set-vars.yml
+        apply: 
+          tags: vms        
+      tags: [all, vms]
     - include_tasks: adm-home-setup.yml
     - include_tasks: libvirt-network-setup.yml
     - include_tasks: base-image-download.yml
-    - include_tasks: nodes-setup.yml
+    - include_tasks: 
+        file: vms-setup.yml
+        apply: 
+          tags: vms
+      tags: [all, vms]
     

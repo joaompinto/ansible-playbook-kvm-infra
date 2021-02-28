@@ -4,6 +4,7 @@
     command: list_vms
     state: running
   register: running_vms
+  tags: [all, vms]
 
 - name: stop running vms
   community.libvirt.virt:
@@ -11,10 +12,12 @@
     name: "{{ item.name }}"
   when: item.name in running_vms.list_vms
   loop: "{{ nodes }}"
-
+  tags: [all, vms]
+  
 - name: get list of vms
   virt: command=list_vms
   register: virt_vms
+  tags: [all, vms]
 
 - name: destroy existing vms
   community.libvirt.virt:
@@ -22,6 +25,7 @@
     name: "{{ item.name}}"
   when: item.name in virt_vms.list_vms
   loop: "{{ nodes }}"
+  tags: [all, vms]
 
 - name: define libvirt network
   virt_net:
@@ -34,7 +38,3 @@
     command: undefine
     name: "{{ item.netname }}"
   with_items: "{{ vmhost_network }}"
-
-
-
-

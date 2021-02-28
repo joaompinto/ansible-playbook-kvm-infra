@@ -34,11 +34,8 @@
   when: virt_info[item.name]['state'] != 'running'
   loop: "{{ nodes }}"
 
-# - name: Add vm to in memory inventory
-#   add_host: hostname={{ item.network['ip'] }}
-#   loop: "{{ nodes }}"  
 
-- name: Wait for system to become reachable
+- name: Wait for new VM to become reachable on port 22
   wait_for:
     host: "{{ item.network['ip'] }}"
     port: 22

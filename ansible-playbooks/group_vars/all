@@ -3,7 +3,9 @@ vm_base:
   local_filename: 20210201_ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img
   sha256sum: 5189af8d359c43de9e50d57499ad108f2cc13f19a8c5c04b1e94b91a050b19f3
 
-mckadm_user: mckadm
-mckadm_user_home: /home/mckadm
+akvmadm_user: akvmadm
+akvmadm_group: akvmadm
+akvmadm_user_home: /home/akvmadm
+disks_location: /home/akvmadm/var/disks
 
 ssh_availability_timeout: 100

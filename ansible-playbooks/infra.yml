@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: true
+  roles:
+    - kvm-infra
+
+  vars_files:
+    - etc/infra.yml
+

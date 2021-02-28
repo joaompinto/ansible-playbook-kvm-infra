@@ -1,0 +1,16 @@
+
+---
+# Create the akvmadm user
+- include_tasks: adm-user-setup.yml
+
+- name: Perform the minicluster adm setuop
+  become_user: "{{ akvmadm_user }}"
+  environment: 
+    LIBVIRT_DEFAULT_URI: "qemu:///system"
+  block:
+    - include_tasks: set-vars.yml
+    - include_tasks: adm-home-setup.yml
+    - include_tasks: libvirt-network-setup.yml
+    - include_tasks: base-image-download.yml
+    - include_tasks: nodes-setup.yml
+    

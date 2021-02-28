@@ -1,26 +1,26 @@
 ---
 
-- name: extract password from file
+- name: extract public key
   slurp:
-    src: "{{ mckadm_user_home }}/.ssh/id_ed25519.pub"
+    src: "{{ akvmadm_user_home }}/.ssh/id_ed25519.pub"
   register: pub_key_file
 
 - name: Create directory if it does not exist
   file:
-    path: "{{ mckadm_user_home }}/var/cloud-init/"
+    path: "{{ akvmadm_user_home }}/var/cloud-init/"
     state: directory
     mode: '0750'
 
 - template:
     src: cloud_init.cfg
-    dest: "{{ mckadm_user_home }}/var/cloud-init/cloud-init-{{ vm_item.name }}.cfg"
+    dest: "{{ akvmadm_user_home }}/var/cloud-init/cloud-init-{{ vm_item.name }}.cfg"
   vars:
     hostname: "{{ vm_item.name }}"
     pub_key: "{{ pub_key_file['content'] | b64decode }}"
 
 - template:
     src: network_config.cfg
-    dest: "{{ mckadm_user_home }}/var/cloud-init/network-config-{{ vm_item.name }}.cfg"
+    dest: "{{ akvmadm_user_home }}/var/cloud-init/network-config-{{ vm_item.name }}.cfg"
   vars:
     hostname: "{{ vm_item.name }}"
     ip: "{{ vm_item.network['ip'] }}"
@@ -31,14 +31,14 @@
   set_fact:
     root_disk_path: "{{ disks_location }}/{{ vm_item.name }}_root.img"
     var_disk_path: "{{ disks_location }}/{{ vm_item.name }}_var.img"
-    seed_img_path: "{{ mckadm_user_home }}/var/cloud-init/seed_{{ vm_item.name }}.img"
+    seed_img_path: "{{ akvmadm_user_home }}/var/cloud-init/seed_{{ vm_item.name }}.img"
 
 - name: create the cloud init img
   command: 
     cmd: 'cloud-localds -v 
-      --network-config={{ mckadm_user_home }}/var/cloud-init/network-config-{{ vm_item.name }}.cfg
+      --network-config={{ akvmadm_user_home }}/var/cloud-init/network-config-{{ vm_item.name }}.cfg
       {{ seed_img_path }}
-      {{ mckadm_user_home }}/var/cloud-init/cloud-init-{{ vm_item.name }}.cfg'
+      {{ akvmadm_user_home }}/var/cloud-init/cloud-init-{{ vm_item.name }}.cfg'
     creates: "{{ seed_img_path }}"
 
 - name: create the root disk

@@ -1,7 +1,7 @@
 ---
-- name: Ensture user "{{ mckadm_user }}" is created
+- name: Ensture user "{{ akvmadm_user }}" is created
   user:
-    name: "{{ mckadm_user }}"
+    name: "{{ akvmadm_user }}"
     comment: Mini Cluster Kube Adm
     group: libvirt-qemu
     groups: kvm, libvirt

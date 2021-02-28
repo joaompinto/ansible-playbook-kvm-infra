@@ -8,7 +8,8 @@ vmhost_network:
 nodes:
     - name: mck-master1    
       cpu: 1
-      mem: 768
+      mem: 1024
       root_size: 10
       var_size: 20
       network: { name: mck, ip: 192.168.8.10 }
+      

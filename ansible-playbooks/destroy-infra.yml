@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  become: true
+  roles:
+    - destroy
+
+  vars_files:
+    - etc/infra.yml

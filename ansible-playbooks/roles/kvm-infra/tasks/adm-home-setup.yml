@@ -1,10 +1,10 @@
 ---
 - name: Create ssh config directory if it does not exist
   ansible.builtin.file:
-    path: "{{ mckadm_user_home }}/.ssh"
+    path: "{{ akvmadm_user_home }}/.ssh"
     state: directory
     mode: '0750'
-    owner: mckadm
+    owner: akvmadm
 
 - name: Create disks directory if it does not exist
   ansible.builtin.file:
@@ -14,5 +14,5 @@
 
 - name: Generate an OpenSSH keypair
   community.crypto.openssh_keypair:
-    path: "{{ mckadm_user_home }}/.ssh/id_ed25519"
+    path: "{{ akvmadm_user_home }}/.ssh/id_ed25519"
     type: ed25519

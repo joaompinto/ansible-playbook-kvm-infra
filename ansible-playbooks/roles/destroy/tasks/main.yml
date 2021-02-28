@@ -1,0 +1,40 @@
+
+- name: list only running VMs
+  community.libvirt.virt:
+    command: list_vms
+    state: running
+  register: running_vms
+
+- name: stop running vms
+  community.libvirt.virt:
+    command: destroy
+    name: "{{ item.name }}"
+  when: item.name in running_vms.list_vms
+  loop: "{{ nodes }}"
+
+- name: get list of vms
+  virt: command=list_vms
+  register: virt_vms
+
+- name: destroy existing vms
+  community.libvirt.virt:
+    command: undefine
+    name: "{{ item.name}}"
+  when: item.name in virt_vms.list_vms
+  loop: "{{ nodes }}"
+
+- name: define libvirt network
+  virt_net:
+    command: destroy
+    name: "{{ item.netname }}"
+  with_items: "{{ vmhost_network }}"
+
+- name: define libvirt network
+  virt_net:
+    command: undefine
+    name: "{{ item.netname }}"
+  with_items: "{{ vmhost_network }}"
+
+
+
+

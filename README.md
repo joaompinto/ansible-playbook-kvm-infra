@@ -1,23 +1,63 @@
-# masterkube1
+# Ansible Playbook for KVM Infra
+This playbook is designed to define and manage networks and guests on a KVM host. It is really designed for dev work, where the KVM host is your local machine and you have sudo privileges.
 
-This repository provides an ansible playbook to install a multinode kubernetes cluster using KVM on a single host.
+You define the networks, VMs and their resources from a single «YAML» infra defintion file.
 
-Requirements:
- - Ubuntu 20.04 LTS
- - RAM: 32GB
+Example:
+```yaml
+vmhost_network:
+    - netname: mck
+      bridge_name: br-mck
+      net4_address: '192.168.8.0/24'
+      net4_dhcp: True
+
+nodes:
+    - name: mck-master1    
+      cpu: 1
+      mem: 1024
+      root_size: 10
+      var_size: 20
+      network: { name: mck, ip: 192.168.8.10 }
+```    
+
+To operate the KVM sources managed by this playbook the user 'akvmadm' is created.
 
 
+## Requirements
+The playbook was developed/tested to be run x86_64 host running Ubuntu 20.04 LTS.
+All the requires packages and services are installed/setup by this playbook, no manual setup is required. The required ammount of RAM will depend on your infrastructure setup.
 
+### Install Ansible
+Login with your individual user and setup ansible/ansible-galaxy:
 ```sh
 sudo apt install ansible
 ansible-galaxy collection install  -r requirerements.yml
 ```
-
-Run the full playbook
+## Setup the KVM Host
+Run KVM host setup playbook
 ```sh
-ansible-playbook ansible-playbooks/full.yml
+ansible-playbook ansible-playbooks/kvm-host.yml
+```
+## Deploy Infra to KVM
+Adjust [infra.yml](ansible-playbooks/etc/infra.yml) to your needs.
+
+:warning: Do not overlap network and vm names with existing KVM resources from other projects-
+
+Deploy the defined infra:
+```sh
+ansible-playbook ansible-playbooks/infra.yml
 ```
 
+Test the new infra:
+```sh
+# Test the ansible setup
+sudo su - akvmadm -c 'ansible all -m ping'
 
-References:
-- https://git.fslab.de/aeber12s/ansible-vmhost
+# Login into the new node to test it
+sudo su - akvmadm -c 'ssh mck-master1'
+```
+## Destroying the managed KVM infra
+```
+ansible-playbook ansible-playbooks/destroy-infra.yml
+sudo userdel -r akvmadm
+```

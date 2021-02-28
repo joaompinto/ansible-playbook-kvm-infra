@@ -1,0 +1,5 @@
+{% for host in nodes %}
+Host {{ host.name }}
+    User ubuntu
+    Hostname {{ host.network['ip'] }}
+{% endfor %} 

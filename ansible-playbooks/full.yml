@@ -5,9 +5,6 @@
   vars_files:
     - etc/cluster.yml
 
-  vars:
-    disks_location: /home/mckadm/var/disks
-
   roles:
     - kvm-host
     - minicluster

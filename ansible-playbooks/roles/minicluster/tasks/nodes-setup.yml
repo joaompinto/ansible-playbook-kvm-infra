@@ -1,0 +1,46 @@
+---
+- name: get list of vms
+  virt: command=list_vms
+  register: virt_vms
+
+- name: Create directory if it does not exist
+  file:
+    path: "{{ mckadm_user_home }}/var/vms/"
+    state: directory
+    mode: '0750'
+
+- name: write json to file
+  copy: 
+    content: "{{ item |  to_nice_json }}" 
+    dest: "{{ mckadm_user_home }}/var/vms/{{ item.name }}.json"
+  loop: "{{ nodes }}"
+
+- include: vm-create.yml
+  vars:
+      vm_item: "{{ item }}"
+  when: item.name not in virt_vms.list_vms
+  loop: "{{ nodes }}"
+
+- name: get guest info
+  virt: command=info
+  register: virt_info
+
+- name: virt_info
+  ansible.builtin.debug:
+    msg: "{{ virt_info }}"
+  
+- name: make sure all vms are running
+  virt: name={{item.name}} command=start
+  when: virt_info[item.name]['state'] != 'running'
+  loop: "{{ nodes }}"
+
+# - name: Add vm to in memory inventory
+#   add_host: hostname={{ item.network['ip'] }}
+#   loop: "{{ nodes }}"  
+
+- name: Wait for system to become reachable
+  wait_for:
+    host: "{{ item.network['ip'] }}"
+    port: 22
+    timeout: "{{ ssh_availability_timeout }}"
+  loop: "{{ nodes }}"

@@ -3,7 +3,7 @@
 This repository provides an ansible playbook to install a multinode kubernetes cluster using KVM on a single host.
 
 Requirements:
- - Ubuntu 20.04
+ - Ubuntu 20.04 LTS
  - RAM: 32GB
 
 

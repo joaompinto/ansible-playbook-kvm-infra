@@ -1,57 +1,16 @@
+
 ---
-- name: Ensure group "mckadm" is created
-  ansible.builtin.group:
-    name: mckadm
-    gid: 4000
-    state: present
+# Create the mckadm user
+- include_tasks: mckadm-user-setup.yml
 
-- name: Ensture user "mckadm" is created
-  user:
-    name: mckadm
-    comment: Mini Cluster Kube Adm
-    group: mckadm
-    groups: kvm, libvirt
-    shell: /bin/bash
-
-- name: mckadm setup
-  become: yes
-  become_user: mckadm
+- name: Perform the minicluster adm setuop
+  become_user: "{{ mckadm_user }}"
+  environment: 
+    LIBVIRT_DEFAULT_URI: "qemu:///system"
   block:
-    - name: Create ssh config directory if it does not exist
-      ansible.builtin.file:
-        path: /home/mckadm/.ssh
-        state: directory
-        mode: '0750'
-        owner: mckadm
-        group: mckadm
-
-    - name: Create disks directory if it does not exist
-      ansible.builtin.file:
-        path: "{{ disks_location }}"
-        state: directory
-        mode: '0750'
-
-    - name: Generate an OpenSSH keypair
-      community.crypto.openssh_keypair:
-        path: /home/mckadm/.ssh/id_ed25519
-        type: ed25519
-
-    - name: Download {{ vm_base['url'] }}
-      get_url:
-        url: "{{ vm_base['url'] }}"
-        dest: "{{ disks_location }}/{{ vm_base['local_filename'] }}"
-        sha256sum: "{{ vm_base['sha256sum'] }}"
-
-    - name: define libvirt network
-      virt_net:
-        command: define
-        name: "{{ item.netname }}"
-        xml: "{{ lookup('template', 'bridge.xml.j2') }}"
-      with_items: "{{ vmhost_network }}"
-
-    - name: start libvirt network
-      virt_net:
-        autostart: "yes"
-        state: "active"
-        name: "{{ item.netname }}"
-      with_items: "{{ vmhost_network }}"
+    - include_tasks: set-vars.yml
+    #- include_tasks: mckadm-home-setup.yml
+    #- include_tasks: libvirt-network-setup.yml
+    #- include_tasks: base-image-download.yml
+    - include_tasks: nodes-setup.yml
+    

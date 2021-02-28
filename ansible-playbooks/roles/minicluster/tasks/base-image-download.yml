@@ -1,0 +1,8 @@
+---
+
+- name: Download {{ vm_base['url'] }}
+  get_url:
+    url: "{{ vm_base['url'] }}"
+    dest: "{{ base_image }}"
+    sha256sum: "{{ vm_base['sha256sum'] }}"
+

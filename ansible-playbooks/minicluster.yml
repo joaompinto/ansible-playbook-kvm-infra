@@ -8,4 +8,4 @@
     - etc/cluster.yml
 
   vars:
-    disks_location: /home/mckadm/var/disks
+    disks_location: "{{ mckadm_user_home }}/var/disks"

@@ -1,0 +1,9 @@
+vm_base:
+  url: https://cloud-images.ubuntu.com/releases/focal/release-20210201/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img
+  local_filename: 20210201_ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img
+  sha256sum: 5189af8d359c43de9e50d57499ad108f2cc13f19a8c5c04b1e94b91a050b19f3
+
+mckadm_user: mckadm
+mckadm_user_home: /home/mckadm
+
+ssh_availability_timeout: 100

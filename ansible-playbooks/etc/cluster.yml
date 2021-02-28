@@ -1,9 +1,4 @@
 ---
-vm_base:
-  url: https://cloud-images.ubuntu.com/focal/20210129/focal-server-cloudimg-amd64-disk-kvm.img
-  local_filename: 20210129_focal-server-cloudimg-amd64-disk-kvm.img
-  sha256sum: d51376d03e19122f72fe9e0d520c37a09bb63ff160e4ba2c2b5af8a11da8647e
-
 vmhost_network:
     - netname: mck
       bridge_name: br-mck
@@ -16,3 +11,4 @@ nodes:
       mem: 768
       root_size: 10
       var_size: 20
+      network: { name: mck, ip: 192.168.8.10 }

@@ -1,0 +1,8 @@
+---
+- name: Ensture user "{{ mckadm_user }}" is created
+  user:
+    name: "{{ mckadm_user }}"
+    comment: Mini Cluster Kube Adm
+    group: libvirt-qemu
+    groups: kvm, libvirt
+    shell: /bin/bash

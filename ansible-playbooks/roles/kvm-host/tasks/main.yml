@@ -9,6 +9,7 @@
       - virtinst 
       - bridge-utils
       - python3-lxml 
+      - python3-netaddr
     state: latest
 
 - name: start libvirtd

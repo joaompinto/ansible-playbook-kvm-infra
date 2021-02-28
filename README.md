@@ -1,9 +1,7 @@
-# Ansible Playbook for KVM Infra
-This playbook is designed to define and manage networks and guests on a KVM host. It is really designed for dev work, where the KVM host is your local machine and you have sudo privileges.
+# Ansible Playbook for KVM Infra management
+This playbook is designed to define and manage networks and guests on a KVM host from an infra manifest(YAML). It is designed for lab/dev work, where the KVM host is a local machine and you have sudo privileges.
 
-You define the networks, VMs and their resources from a single «YAML» infra defintion file.
-
-Example:
+Example of a bridged network interface and one vm:
 ```yaml
 vmhost_network:
     - netname: mck
@@ -20,7 +18,7 @@ nodes:
       network: { name: mck, ip: 192.168.8.10 }
 ```    
 
-To operate the KVM sources managed by this playbook the user 'akvmadm' is created.
+To operate the KVM sources managed by this playbook the user _akvmadm_ is created.
 
 
 ## Requirements

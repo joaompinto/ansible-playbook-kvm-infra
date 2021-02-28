@@ -31,7 +31,7 @@
   set_fact:
     root_disk_path: "{{ disks_location }}/{{ vm_item.name }}_root.img"
     var_disk_path: "{{ disks_location }}/{{ vm_item.name }}_var.img"
-    seed_img_path: "{{ akvmadm_user_home }}/var/cloud-init/seed_{{ vm_item.name }}.img"
+    seed_img_path: "{{ disks_location }}/{{ vm_item.name }}_seed.img"
 
 - name: create the cloud init img
   command: 
@@ -43,12 +43,12 @@
 
 - name: create the root disk
   command:
-    cmd: qemu-img create -b {{ base_image }} -f qcow2 -F qcow2 {{ root_disk_path }} {{ vm_item.root_size }}G
+    cmd: qemu-img create -b {{ base_image }} -F qcow2 -f qcow2 {{ root_disk_path }} {{ vm_item.root_size }}G
     creates: "{{ root_disk_path }}"
 
 - name: create the var disk
   command:
-    cmd: qemu-img create -b {{ base_image }} -f qcow2 -F qcow2 {{ var_disk_path }} {{ vm_item.var_size }}G
+    cmd: qemu-img create -f qcow2 {{ var_disk_path }} {{ vm_item.var_size }}G
     creates: "{{ var_disk_path }}"
 
 - name: create vm

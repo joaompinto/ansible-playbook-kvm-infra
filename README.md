@@ -24,6 +24,23 @@ To operate the KVM sources managed by this playbook the user _akvmadm_ is create
 The playbook was developed/tested to be run x86_64 host running Ubuntu 20.04 LTS.
 All the requires packages and services are installed/setup by this playbook, no manual setup is required. The required ammount of RAM will depend on your infrastructure setup.
 
+You must manually configure the KVM host to have the bridged interface "br0" briged to a wired network.
+
+
+```yaml
+# /etc/netplan/00-installer-config.yaml
+network:
+  ethernets: 
+    eno1:
+            dhcp4: true
+  bridges:
+    br0:
+      interfaces: [ eno1 ] # Must match the ethernet device above 
+      dhcp4: true
+  version: 2
+```
+After chante the file run ***sudo netplan apply*** .
+
 ### Install Ansible
 Login with your individual user and setup ansible/ansible-galaxy:
 ```sh

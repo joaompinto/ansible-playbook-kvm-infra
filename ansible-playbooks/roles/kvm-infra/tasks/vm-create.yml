@@ -23,9 +23,9 @@
     dest: "{{ akvmadm_user_home }}/var/cloud-init/network-config-{{ vm_item.name }}.cfg"
   vars:
     hostname: "{{ vm_item.name }}"
-    ip: "{{ vm_item.network['ip'] }}"
-    gw: "{{ vm_item.network['ip'].split('.')[:3] | join('.') }}.1"
-    dns: "{{ vm_item.network['ip'].split('.')[:3] | join('.') }}.1"
+    ip: "{{ ansible_default_ipv4.address.split('.')[:3] | join('.') }}.{{ vm_item.network_ip }}"
+    gw: "{{ ansible_default_ipv4.address.split('.')[:3] | join('.') }}.1"
+    dns: "{{ ansible_default_ipv4.address.split('.')[:3] | join('.') }}.1"
 
 - name: set disks path
   set_fact:
@@ -61,7 +61,7 @@
     --disk path={{ seed_img_path }},device=disk,readonly=on
     --disk path={{ var_disk_path }}
     --os-type Linux --os-variant ubuntu20.04
-    --network network={{ vm_item.network['name'] }},model=virtio
+    --network network=host-bridge,model=virtio
     --noautoconsole"
 
 

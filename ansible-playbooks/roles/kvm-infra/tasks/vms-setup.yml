@@ -37,7 +37,7 @@
 
 - name: Wait for new VM to become reachable on port 22
   wait_for:
-    host: "{{ item.network['ip'] }}"
+    host: "{{ ansible_default_ipv4.address.split('.')[:3] | join('.') }}.{{ item.network_ip }}"
     port: 22
     timeout: "{{ ssh_availability_timeout }}"
   loop: "{{ nodes }}"

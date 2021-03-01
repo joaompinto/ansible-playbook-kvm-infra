@@ -1,14 +1,18 @@
+# ip addr add 192.168.8.0/24 dev br-mck
 ---
-vmhost_network:
-    - netname: mck
-      bridge_name: br-mck
-      net4_address: '192.168.8.0/24'
-
 nodes:
     - name: mck-master1    
       cpu: 1
-      mem: 1024
+      mem: 2048
       root_size: 10
       var_size: 20
-      network: { name: mck, ip: 192.168.8.10 }
-      
+      network_ip: 10
+      roles: [master]
+    #
+    - name: mck-worker1  
+      cpu: 1
+      mem: 2048
+      root_size: 10
+      var_size: 20
+      network_ip: 11
+      roles: [worker]      
